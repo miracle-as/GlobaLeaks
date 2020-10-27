@@ -60,20 +60,17 @@ The table below summarizes the authentication methods for each user role.
    "Recipient", "Username and password"
    "Whistleblower", "Receipt"
 
-
 Authentication Methods
 ----------------------
 Supported authentication methods are described as follows.
+
 Password
-Administrators and Recipients use password based authentication.
-
+^^^^^^^^
 By accessing the GlobaLeaks login interface, Administrators and Recipients need to insert their respective username and password. If the password submitted is valid, the system grants access to the functionality available to that user.
+
 Receipt
-Whistleblowers access their Reports by using a Receipt, which is a randomly generated 16 digits sequence created by the Backend when the Report is first submitted.
-
-The reason of this format of 16 digits is that it resembles a standard phone number, making it easier for the whistleblower to conceal the receipt of their submission and give them plausible deniability on what is the significance of such digits.
-
-As for a password based authentication, the Backend does not store a cleartext version of the Receipt but just an hash subject to a salt.
+^^^^^^^
+Whistleblowers access their Reports by using a Receipt, which is a randomly generated 16 digits sequence created by the Backend when the Report is first submitted. The reason of this format of 16 digits is that it resembles a standard phone number, making it easier for the whistleblower to conceal the receipt of their submission and give them plausible deniability on what is the significance of such digits.
 
 Password Security
 =================
@@ -149,10 +146,7 @@ Session management
 ------------------
 The session implemenetation follows the `OWASP Session Management Cheat Sheet <https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html>`_ security guidelines.
 
-The system assigns a Session to each authenticated user.
-The Session ID is 256bits long secret generated randomly by the backend.
-Each session expire accordingly to a timeout of 5 minutes.
-Session IDs are exchanged by the client with the backend by means of an header (X-Session) and do expire as soon that users close their browser or the tab running GlobaLeaks. Users could explicitly log out via a logout button or implicitly by closing the browser.
+The system assigns a Session to each authenticated user. The Session ID is 256bits long secret generated randomly by the backend. Each session expire accordingly to a timeout of 5 minutes. Session IDs are exchanged by the client with the backend by means of an header (X-Session) and do expire as soon that users close their browser or the tab running GlobaLeaks. Users could explicitly log out via a logout button or implicitly by closing the browser.
 
 XSRF Prevention
 ---------------
@@ -170,6 +164,8 @@ The client implement strict validation of the rendered content by using the angu
 
 Security related HTTP headers
 -----------------------------
+The system implements a large set of HTTP headers specifically crafted to improve the software security and achieves Security Headers [grade A](https://securityheaders.com/?q=https%3A%2F%2Ftry.globaleaks.org&followRedirects=on) and Mozilla Observatory [grade A+](https://observatory.mozilla.org/analyze/try.globaleaks.org)
+
 Strict-Transport-Security
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 The system implements strict transport security by default.
@@ -227,7 +223,6 @@ The following is the ``Robots.txt`` configuration:
   Allow: /$
   Disallow: *
 
-
 For high sensitive projects where the platform is inteded to remain ``hidden`` and commuicated to possible whistleblowers directly the platform could be as well configured to disable indexing completely.
 
 The following is the ``HTTP Header`` injected in this case:
@@ -262,6 +257,17 @@ Form implemented by the platform make use of the HTML5 form attribute in order t
 
 This is achieved by setting `autocomplete=”false” <https://www.w3.org/TR/html5/forms.html=autofilling-form-controls:-the-autocomplete-attribute>`_ on the relevant forms or attributes.
 
+Network Security
+================
+Tor
+---
+The software adopts `Tor <https://www.torproject.org/>`_ as default, prefferred and recommended connection encryption protocol for its security and each GlobaLeaks server by default implement an ``Onion Service v3``.
+The use of ``Tor`` is recommended over HTTPS for its advanced properties of resistance to selective interception and censorship that would make it difficult for a third party to selectively capture or block tccess to the site to specific whistleblower or company department.
+
+HTTPS
+-----
+The software enables easy setup of ``HTTPS`` offering both automatic setup via `Let'sEncrypt <https://letsencrypt.org/>`_ and manual setup. HTTPS is configured with ``TLS1.2+`` and its configuration is tuned to achieve `SSLLabs grade A+ <https://www.ssllabs.com/ssltest/analyze.html?d=try.globaleaks.org>`_.
+
 Data Encryption
 ===============
 The data, files, messages and metadata exchanged between whistleblowers and recipients is encrypted using the GlobaLeaks :doc:`EncryptionProtocol`.
@@ -272,13 +278,13 @@ In addition to this GlobaLeaks implements many other encryption components and t
 * `Python-Cryptography <https://cryptography.io>`_: is used for implementing authentication
 * `Python-GnuPG <http://pythonhosted.org/python-gnupg/index.html>`_: is used for encrypting email notifications
 
-DoS Resiliency Approach
-=======================
+DoS Resiliency
+==============
 To avoid applicative and database denial of service, GlobaLeaks apply the following measures:
 
-It tries to limit the possibility of automating any operation by requiring human interaction (e.g. with the implementation of proof of work)
-It is written to limit the possibility of triggering CPU intensive routines by an external user (e.g. by implementing limits on queries and jobs execution time)
-It implements monitoring of each activity trying to implement detection of attacks and implement proactively security measures to prevent DoS (e.g. implementing slowdown on fast-operations)
+* It tries to limit the possibility of automating any operation by requiring human interaction (e.g. with the implementation of proof of work)
+* It is written to limit the possibility of triggering CPU intensive routines by an external user (e.g. by implementing limits on queries and jobs execution time)
+* It implements monitoring of each activity trying to implement detection of attacks and implement proactively security measures to prevent DoS (e.g. implementing slowdown on fast-operations)
 
 Network Sandboxing
 ==================
