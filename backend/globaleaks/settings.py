@@ -23,8 +23,6 @@ class SettingsClass(object, metaclass=Singleton):
         self.nodaemon = False
 
         self.bind_address = '::'
-        self.bind_remote_ports = [80, 443]
-        self.bind_local_ports = [8082, 8083]
 
         self.db_type = 'sqlite'
 
@@ -63,12 +61,6 @@ class SettingsClass(object, metaclass=Singleton):
         self.disable_notifications = False
         self.notification_limit = 30
         self.jobs_operation_limit = 20
-
-        self.user = getpass.getuser()
-        self.group = getpass.getuser()
-
-        self.uid = os.getuid()
-        self.gid = os.getgid()
 
         self.devel_mode = False
         self.disable_swap = False
@@ -147,14 +139,6 @@ class SettingsClass(object, metaclass=Singleton):
         self.bind_address = options.ip
         self.socks_host = options.socks_host
         self.socks_port = options.socks_port
-
-        if options.user:
-            self.user = options.user
-            self.uid = pwd.getpwnam(options.user).pw_uid
-
-        if options.group:
-            self.group = options.group
-            self.gid = grp.getgrnam(options.group).gr_gid
 
         if options.devel_mode:
             self.set_devel_mode()
