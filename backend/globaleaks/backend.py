@@ -18,7 +18,7 @@ from globaleaks.rest.api import APIResourceWrapper
 from globaleaks.settings import Settings
 from globaleaks.state import State
 from globaleaks.utils.log import log, openLogFile, logFormatter, LogObserver
-from globaleaks.utils.process import disable_swap, set_proc_title
+from globaleaks.utils.process import set_proc_title
 from globaleaks.utils.sock import listen_tcp_on_sock, listen_tls_on_sock, reserve_port_for_ip
 
 
@@ -46,6 +46,8 @@ class Service(service.Service):
     _shutdown = False
 
     def __init__(self):
+        set_proc_title('globaleaks')
+
         self.state = State
         self.arw = APIResourceWrapper()
 
@@ -68,11 +70,6 @@ class Service(service.Service):
                     self.state.http_socks += [sock]
                 else:
                     self.state.https_socks += [sock]
-
-        if Settings.disable_swap:
-            disable_swap()
-
-        set_proc_title('globaleaks')
 
         reactor.callLater(0, self.deferred_start)
 
